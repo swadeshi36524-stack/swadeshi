@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wellness Events & Experiences | Swadeshi Natural Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/design-system.css">
+  <style>
+    :root {
+      --event-green: #2A5C41;
+      --event-brown: #7a5030;
+      --event-gold: #c2a573;
+      --event-cream: #FDFBF7;
+    }
+
+    body {
+      background-color: var(--event-cream);
+      margin: 0;
+      color: #333;
+    }
+
+    .events-hero {
+      padding: 60px 20px 40px;
+      text-align: center;
+      position: relative;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.05"><path d="M10 10 Q 50 0 90 10" stroke="green" fill="none"/></svg>');
+    }
+
+    .back-link {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: #666;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow::before, .eyebrow::after {
+      content: "";
+      width: 40px;
+      height: 1px;
+      background: #ddd;
+    }
+
+    .events-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 56px);
+      color: var(--event-green);
+      margin-bottom: 20px;
+    }
+
+    .events-hero p {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      color: #666;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* Filters */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 60px;
+    }
+
+    .filter-btn {
+      padding: 10px 24px;
+      border-radius: 30px;
+      border: 1px solid #e0e0e0;
+      background: white;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn.active {
+      background: var(--event-green);
+      color: white;
+      border-color: var(--event-green);
+    }
+
+    .filter-btn:hover:not(.active) {
+      background: #f0f0f0;
+    }
+
+    /* Event Grid */
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto 80px;
+      padding: 0 20px;
+    }
+
+    .event-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .event-card.hidden {
+      display: none;
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    .event-card:hover { transform: translateY(-8px); }
+
+    .card-media {
+      height: 240px;
+      position: relative;
+      background: #eee;
+    }
+
+    /* Date Badge */
+    .date-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      z-index: 2;
+    }
+
+    .date-badge .day { font-size: 20px; font-weight: 700; display: block; line-height: 1; }
+    .date-badge .month { font-size: 12px; text-transform: uppercase; font-weight: 600; color: #666; }
+    .date-badge .year { font-size: 10px; color: #999; }
+
+    .category-tag {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(4px);
+      background: rgba(0,0,0,0.3);
+    }
+
+    .card-content { padding: 30px; flex: 1; display: flex; flex-direction: column; }
+    
+    .card-content h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      margin: 0 0 15px;
+      color: var(--event-green);
+    }
+
+    .event-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .detail-item { display: flex; align-items: center; gap: 8px; }
+
+    .event-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #777;
+      margin-bottom: 25px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .registered-users {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .user-avatars { display: flex; }
+    .user-avatars img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid white;
+      margin-right: -8px;
+    }
+
+    .btn-register {
+      background: var(--event-green);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s;
+    }
+
+    .btn-register:hover { background: var(--color-primary-dark); }
+
+    /* Features Bar */
+    .features-bar {
+      background: #E8F0EB;
+      padding: 40px 0;
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .features-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      padding: 0 20px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--event-green);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .feature-text strong { display: block; font-size: 15px; color: #111; }
+    .feature-text span { font-size: 13px; color: #666; }
+
+    @media (max-width: 768px) {
+      .back-link { position: static; margin-bottom: 20px; padding: 0 20px; }
+      .events-hero { padding-top: 20px; }
+      .event-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="events-hero">
+    <a href="/index.html" class="back-link">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to Store
+    </a>
+
+    <div class="eyebrow">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color:var(--event-green)"><path d="M17,8C15.34,8 14,9.34 14,11C14,12.66 15.34,14 17,14C18.66,14 20,12.66 20,11C20,9.34 18.66,8 17,8M8,7L2,14H22L16,7V2H8V7M11,4H13V7H11V4M2,16V18H22V16H2Z"/></svg>
+      Our Events
+    </div>
+    <h1>Wellness Events & Experiences</h1>
+    <p>Join us for inspiring sessions, workshops and community events to learn, heal and live a more natural life.</p>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All Events</button>
+      <button class="filter-btn" data-filter="workshop">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Workshops
+      </button>
+      <button class="filter-btn" data-filter="yoga">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 6.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="8" r="3"/></svg>
+        Yoga & Wellness
+      </button>
+      <button class="filter-btn" data-filter="natural">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Natural Living
+      </button>
+      <button class="filter-btn" data-filter="community">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Community
+      </button>
+    </div>
+  </header>
+
+  <main class="event-grid">
+    <!-- Event 1 -->
+    <div class="event-card" data-category="yoga">
+      <div class="card-media" style="background: linear-gradient(to bottom right, #2d6a4f, #1b4332);">
+        <div class="date-badge">
+          <span class="day">08</span>
+          <span class="month">Mar</span>
+          <span class="year">2024</span>
+        </div>
+        <div class="category-tag">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 6.2c0 7.3-8 11.8-8 11.8z"/></svg>
+          Yoga & Wellness
+        </div>
+      </div>
+      <div class="card-content">
+        <h3>International Yoga Day</h3>
+        <div class="event-details">
+          <div class="detail-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            08 Mar 2024
+          </div>
+          <div class="detail-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            7:00 PM - 8:00 PM
+          </div>
+          <div class="detail-item" style="grid-column: span 2;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Online / Community Center
+          </div>
+        </div>
+        <p class="event-desc">Join us for a rejuvenating yoga session to celebrate International Yoga Day. Breathe, move and reconnect with a healthier you.</p>
+        <div class="card-footer">
+          <div class="registered-users">
+            <div class="user-avatars">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?fit=crop&w=100&h=100" alt="user">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=100&h=100" alt="user">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?fit=crop&w=100&h=100" alt="user">
+            </div>
+            680+ Registered
+          </div>
+          <button class="btn-register">Register Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event 2 -->
+    <div class="event-card" data-category="workshop">
+      <div class="card-media" style="background: linear-gradient(to bottom right, #7a5030, #3d2b1f);">
+        <div class="date-badge">
+          <span class="day">15</span>
+          <span class="month">Mar</span>
+          <span class="year">2024</span>
+        </div>
+        <div class="category-tag">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
+          Workshop
+        </div>
+      </div>
+      <div class="card-content">
+        <h3>Ayurveda for Everyday Living</h3>
+        <div class="event-details">
+          <div class="detail-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            15 Mar 2024
+          </div>
+          <div class="detail-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            5:00 PM - 6:30 PM
+          </div>
+          <div class="detail-item" style="grid-column: span 2;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Swadeshi Natural Community Hall
+          </div>
+        </div>
+        <p class="event-desc">Learn simple Ayurvedic practices to improve your daily health, immunity and overall well-being naturally.</p>
+        <div class="card-footer">
+          <div class="registered-users">
+            <div class="user-avatars">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?fit=crop&w=100&h=100" alt="user">
+              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=100&h=100" alt="user">
+              <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?fit=crop&w=100&h=100" alt="user">
+            </div>
+            420+ Registered
+          </div>
+          <button class="btn-register" style="background:var(--event-brown)">Register Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event 3 -->
+    <div class="event-card" data-category="natural">
+      <div class="card-media" style="background: linear-gradient(to bottom right, #c2a573, #8c7344);">
+        <div class="date-badge">
+          <span class="day">22</span>
+          <span class="month">Mar</span>
+          <span class="year">2024</span>
+        </div>
+        <div class="category-tag">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Natural Living
+        </div>
+      </div>
+      <div class="card-content">
+        <h3>Natural Living Workshop</h3>
+        <div class="event-details">
+          <div class="detail-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            22 Mar 2024
+          </div>
+          <div class="detail-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            4:00 PM - 6:00 PM
+          </div>
+          <div class="detail-item" style="grid-column: span 2;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Swadeshi Natural Experience Center
+          </div>
+        </div>
+        <p class="event-desc">Discover how to bring natural, chemical-free alternatives into your lifestyle with expert guidance and hands-on demos.</p>
+        <div class="card-footer">
+          <div class="registered-users">
+            <div class="user-avatars">
+              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?fit=crop&w=100&h=100" alt="user">
+              <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?fit=crop&w=100&h=100" alt="user">
+              <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?fit=crop&w=100&h=100" alt="user">
+            </div>
+            320+ Registered
+          </div>
+          <button class="btn-register" style="background:var(--event-gold)">Register Now →</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="features-bar">
+    <div class="features-inner">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 8.8C19.7 15.2 18 17 15.5 19A7 7 0 0 1 11 20z"></path><path d="M7 20c.5-1 2.5-3 4.5-3.5"></path></svg>
+        </div>
+        <div class="feature-text">
+          <strong>Expert Guidance</strong>
+          <span>Learn from wellness experts</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <div class="feature-text">
+          <strong>Community Connect</strong>
+          <span>Meet like-minded people</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"></path><path d="m4.93 10.93 1.41-1.41"></path><path d="M2 18h20"></path><path d="M19.07 10.93l-1.41-1.41"></path><path d="M12 22v-4"></path><path d="m15.54 13.54 1.41 1.41"></path><path d="M12 14v-4"></path><path d="m8.46 13.54-1.41 1.41"></path></svg>
+        </div>
+        <div class="feature-text">
+          <strong>Hands-on Experience</strong>
+          <span>Practical, real-world learning</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.01 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </div>
+        <div class="feature-text">
+          <strong>A Healthier You</strong>
+          <span>Take home lasting value</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const eventCards = document.querySelectorAll('.event-card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Remove active class from all buttons
+          filterBtns.forEach(b => b.classList.remove('active'));
+          // Add active class to clicked button
+          btn.classList.add('active');
+
+          const filterValue = btn.getAttribute('data-filter');
+
+          eventCards.forEach(card => {
+            const cardCategory = card.getAttribute('data-category');
+            
+            if (filterValue === 'all' || filterValue === cardCategory) {
+              card.classList.remove('hidden');
+              // Trigger a small delay for the animation effect if needed
+              setTimeout(() => {
+                card.style.display = 'flex';
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+              }, 10);
+            } else {
+              card.style.opacity = '0';
+              card.style.transform = 'scale(0.95)';
+              // Wait for transition then hide
+              setTimeout(() => {
+                card.classList.add('hidden');
+                card.style.display = 'none';
+              }, 400);
+            }
+          });
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -13,6 +13,11 @@ const razorpay = require("./razorpay");
 const { hashPassword, verifyPassword, createCustomerToken, verifyCustomerToken, getGoogleTokens, getGoogleUser } = require('./auth');
 
 const rootDir = __dirname;
+// Static asset roots. server.js lives in backend/, so frontend/ and admin/ are
+// its siblings and the project root is one level up.
+const projectDir = path.normalize(path.join(rootDir, '..'));
+const frontendDir = path.normalize(path.join(rootDir, '..', 'frontend'));
+const adminDir = path.normalize(path.join(rootDir, '..', 'admin'));
 const port = Number(process.env.PORT || 3000);
 const adminUsername = process.env.ADMIN_USERNAME || 'admin';
 const adminPassword = process.env.ADMIN_PASSWORD || 'Swadeshi@2026';
@@ -128,8 +133,8 @@ function applySecurityHeaders(res) {
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  // Use a safer CSP that works with Razorpay and Google Auth if needed
-  res.setHeader('Content-Security-Policy', "default-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://accounts.google.com; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://via.placeholder.com https://*.googleusercontent.com; font-src 'self' https://fonts.gstatic.com; frame-src 'self' https://api.razorpay.com; connect-src 'self' https://api.razorpay.com https://oauth2.googleapis.com");
+  // Use a safer CSP that works with Razorpay, Google Auth, YouTube images, and Supabase
+  res.setHeader('Content-Security-Policy', "default-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://accounts.google.com; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://fonts.googleapis.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://via.placeholder.com https://*.googleusercontent.com https://*.youtube.com https://*.ytimg.com; font-src 'self' https://fonts.gstatic.com; frame-src 'self' https://api.razorpay.com; connect-src 'self' https://api.razorpay.com https://oauth2.googleapis.com");
 }
 
 function checkRateLimit(req, type, limit, windowMs) {
@@ -696,34 +701,46 @@ const contentTypes = {
 
 async function serveStatic(req, res, pathname) {
   const safePath = pathname === '/' ? '/index.html' : pathname;
-  const filePath = path.normalize(path.join(rootDir, safePath));
-  if (!filePath.startsWith(rootDir)) {
-    sendText(res, 403, 'Forbidden');
-    return;
-  }
 
-  // Hard blocklist for sensitive files/folders
-  const blockList = ['.env', 'package.json', 'package-lock.json', 'server.js', 'server (1).js', 'auth.js', 'db.js', 'razorpay.js', 'migrate-schema.js', '.git'];
-  if (blockList.some(block => filePath.includes(block))) {
+  // Never serve sensitive files, regardless of which root they resolve from.
+  const blockList = ['.env', 'package.json', 'package-lock.json', 'server.js', 'auth.js', 'db.js', 'razorpay.js', 'migrate-schema.js', '.git'];
+  if (blockList.some(block => safePath.includes(block))) {
     sendText(res, 403, 'Forbidden');
     return;
   }
 
   try {
-    let stat;
-    let targetPath = filePath;
-    try {
-      stat = await fs.stat(filePath);
-      if (stat.isDirectory()) {
-        targetPath = path.join(filePath, 'index.html');
-        stat = await fs.stat(targetPath);
-      }
-    } catch (e) {
-      // Fallback: check inside customer directory if not found in root
-      const customerFilePath = path.normalize(path.join(rootDir, 'customer', safePath));
-      stat = await fs.stat(customerFilePath);
-      targetPath = customerFilePath;
+    // Admin URLs come from admin/ (the '/admin' prefix maps onto that folder);
+    // every other path resolves from frontend/ first, then the project root
+    // (shared assets such as design-system.css).
+    const candidates = [];
+    if (safePath === '/admin' || safePath === '/admin.html') {
+      candidates.push({ base: adminDir, rel: 'admin.html' });
+    } else if (safePath.startsWith('/admin/')) {
+      candidates.push({ base: adminDir, rel: safePath.slice(7) });
     }
+    candidates.push({ base: frontendDir, rel: safePath });
+    candidates.push({ base: projectDir, rel: safePath });
+
+    let targetPath = null;
+    for (const { base, rel } of candidates) {
+      const candidate = path.normalize(path.join(base, rel));
+      if (!candidate.startsWith(projectDir)) continue;
+      try {
+        const stat = await fs.stat(candidate);
+        targetPath = stat.isDirectory() ? path.join(candidate, 'index.html') : candidate;
+        if (stat.isDirectory()) await fs.stat(targetPath);
+        break;
+      } catch {
+        // Not here; try the next location.
+      }
+    }
+
+    if (!targetPath) {
+      sendText(res, 404, 'Not found');
+      return;
+    }
+
     const ext = path.extname(targetPath).toLowerCase();
     const data = await fs.readFile(targetPath);
     res.writeHead(200, { 'Content-Type': contentTypes[ext] || 'application/octet-stream' });
@@ -1332,8 +1349,17 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, { ok: true });
     }
 
-    if (pathname === '/' || pathname === '/index.html' || pathname.startsWith('/images/')) {
-      if (!requireCustomer(req, res)) return; // redirect handled inside requireCustomer
+    // Public storefront: the homepage, events page and static assets are
+    // viewable without logging in — the polished site is the entry point.
+    if (pathname === '/' || pathname === '/index.html' ||
+        pathname === '/events.html' || pathname.startsWith('/images/')) {
+      return serveStatic(req, res, pathname);
+    }
+
+    // Account-specific pages still require a customer session.
+    // (requireCustomer redirects to /login.html and returns false when absent.)
+    if (pathname === '/profile.html') {
+      if (!requireCustomer(req, res)) return;
       return serveStatic(req, res, pathname);
     }
 
@@ -1354,4 +1380,5 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(port, () => {
   console.log(`Swadeshi server running at http://localhost:${port}`);
+  ensurePaymentIntentsTable().catch(err => console.error('Migration failed at startup:', err));
 });
