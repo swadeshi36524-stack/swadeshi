@@ -331,7 +331,10 @@ async function handleWhatsAppWebhook(payload) {
     // Restart whenever the customer greets the bot.
     if (isRestart(text)) {
       session.state = 'AWAITING_LANGUAGE';
-      session.language = session.language || null;
+      // We clear the language too to ensure they can change it if they want a fresh start
+      session.language = null; 
+      session.last_category = null;
+      session.pagination_offset = 0;
       await saveSession(from, session);
       return askLanguage(from);
     }
