@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Deletion Instructions | Swadeshi Natural Products</title>
+  <meta name="description" content="How to request deletion of your personal information held by Swadeshi Natural Products.">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/design-system.css">
+  <style>
+    :root {
+      --pp-forest: #1A3626;
+      --pp-green: #2A5C41;
+      --pp-gold: #C2A573;
+      --pp-cream: #FDFBF7;
+      --pp-line: #EAE6E1;
+      --pp-body: #4A4642;
+      --pp-muted: #7A7571;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--pp-cream);
+      color: var(--pp-body);
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.7;
+    }
+
+    .pp-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(253, 251, 247, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--pp-line);
+    }
+
+    .pp-header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .pp-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--pp-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color .2s ease;
+    }
+    .pp-back:hover { color: var(--pp-green); }
+    .pp-back svg { width: 16px; height: 16px; }
+
+    .pp-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--pp-forest);
+      text-decoration: none;
+      letter-spacing: .2px;
+    }
+    .pp-brand span { color: var(--pp-gold); }
+
+    .pp-hero {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 56px 20px 8px;
+      text-align: center;
+    }
+
+    .pp-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 12px;
+      color: var(--pp-muted);
+      margin-bottom: 18px;
+    }
+    .pp-eyebrow::before, .pp-eyebrow::after {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: var(--pp-line);
+    }
+
+    .pp-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(30px, 5vw, 46px);
+      color: var(--pp-forest);
+      margin: 0 0 14px;
+      line-height: 1.2;
+    }
+
+    .pp-hero p {
+      max-width: 620px;
+      margin: 0 auto;
+      color: var(--pp-muted);
+      font-size: 15px;
+    }
+
+    .pp-updated {
+      display: inline-block;
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--pp-muted);
+      border: 1px solid var(--pp-line);
+      border-radius: 999px;
+      padding: 6px 16px;
+      background: #fff;
+    }
+
+    .pp-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .pp-intro {
+      background: #fff;
+      border: 1px solid var(--pp-line);
+      border-radius: 14px;
+      padding: 24px 26px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(26, 54, 38, 0.04);
+    }
+
+    .pp-card {
+      background: #fff;
+      border: 1px solid var(--pp-line);
+      border-radius: 14px;
+      padding: 28px 26px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(26, 54, 38, 0.04);
+    }
+
+    .pp-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--pp-forest);
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pp-num {
+      flex: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #E8F0EB;
+      color: var(--pp-green);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pp-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--pp-green);
+      margin: 20px 0 8px;
+    }
+
+    .pp-card p { margin: 0 0 12px; font-size: 15px; }
+    .pp-card p:last-child { margin-bottom: 0; }
+
+    .pp-card ul {
+      margin: 0 0 12px;
+      padding-left: 20px;
+    }
+    .pp-card li { margin: 7px 0; font-size: 15px; }
+    .pp-card li::marker { color: var(--pp-gold); }
+
+    .pp-card a { color: var(--pp-green); text-decoration: underline; text-underline-offset: 2px; }
+
+    .pp-note {
+      border-left: 3px solid var(--pp-gold);
+      background: #FBF8F2;
+      padding: 14px 18px;
+      border-radius: 0 10px 10px 0;
+      font-size: 14.5px;
+      color: var(--pp-body);
+      margin: 6px 0 14px;
+    }
+
+    .pp-contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .pp-contact-item {
+      border: 1px solid var(--pp-line);
+      border-radius: 12px;
+      padding: 16px 18px;
+      background: #fff;
+    }
+    .pp-contact-item .pp-label {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--pp-muted);
+      margin-bottom: 6px;
+    }
+    .pp-contact-item a, .pp-contact-item span {
+      font-size: 15px;
+      color: var(--pp-forest);
+      text-decoration: none;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+    .pp-contact-item a:hover { color: var(--pp-green); }
+
+    .pp-footer {
+      border-top: 1px solid var(--pp-line);
+      text-align: center;
+      padding: 26px 20px 40px;
+      color: var(--pp-muted);
+      font-size: 13px;
+    }
+    .pp-footer a { color: var(--pp-green); text-decoration: none; }
+
+    @media (max-width: 640px) {
+      .pp-hero { padding-top: 36px; }
+      .pp-container { padding: 28px 16px 60px; }
+      .pp-intro, .pp-card { padding: 22px 18px; }
+      .pp-card h2 { font-size: 19px; }
+      .pp-header-inner { padding: 13px 16px; }
+      .pp-brand { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="pp-header">
+    <div class="pp-header-inner">
+      <a href="/" class="pp-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        Back to Home
+      </a>
+      <a href="/" class="pp-brand">Swadeshi Natural<span>Products</span></a>
+    </div>
+  </header>
+
+  <section class="pp-hero">
+    <div class="pp-eyebrow">Legal</div>
+    <h1>Data Deletion Instructions</h1>
+    <p>This page explains how you can request the deletion of your personal information that we hold, and how we handle such requests.</p>
+    <span class="pp-updated">Last updated: 2 November 2026</span>
+  </section>
+
+  <main class="pp-container">
+
+    <div class="pp-intro">
+      <p style="margin:0;font-size:15px;">
+        Swadeshi Natural Products respects your right to control your personal information. You can ask us to delete the
+        personal data we hold about you by following the instructions on this page. Requests are reviewed and actioned by
+        our team; deletion is not automatic and is not immediate. Please see the details below.
+      </p>
+    </div>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">1</span> What Personal Information This Covers</h2>
+      <p>You may request deletion of the personal information we hold about you, which may include:</p>
+      <ul>
+        <li>Your name, phone number and email address.</li>
+        <li>Your delivery address and any delivery notes associated with your orders.</li>
+        <li>Your order history, including the products ordered and order details.</li>
+        <li>Your account information registered on our website.</li>
+        <li>Your WhatsApp interaction data, such as your WhatsApp phone number, your selected language and your conversation state with our automated assistant.</li>
+      </ul>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">2</span> How to Submit a Deletion Request</h2>
+      <p>To request deletion of your personal information, send us an email at the address below:</p>
+      <div class="pp-contact-grid">
+        <div class="pp-contact-item">
+          <span class="pp-label">Email for deletion requests</span>
+          <a href="mailto:swadeshi36524@gmail.com?subject=Data%20Deletion%20Request">swadeshi36524@gmail.com</a>
+        </div>
+        <div class="pp-contact-item">
+          <span class="pp-label">Phone / WhatsApp</span>
+          <a href="https://wa.me/919030036524?text=Hi">+91 9030036524</a>
+        </div>
+      </div>
+      <div class="pp-note">
+        Please use the subject line "Data Deletion Request" so that your request is routed correctly. You may also contact
+        us by phone or WhatsApp, but an email request ensures we have a written record of your instruction.
+      </div>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">3</span> What to Include in Your Request</h2>
+      <p>To help us locate your records and process your request accurately, please include:</p>
+      <ul>
+        <li>Your full name.</li>
+        <li>The phone number and/or email address registered with us, so we can identify your account and records.</li>
+        <li>If you have placed orders, your order ID or order details if available.</li>
+        <li>The WhatsApp phone number you used to contact us, if you also want your WhatsApp interaction data deleted.</li>
+        <li>A clear statement that you are requesting deletion of your personal information.</li>
+      </ul>
+      <p>Providing complete details helps us action your request faster and avoid any confusion with other customers' records.</p>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">4</span> Identity Verification May Be Required</h2>
+      <p>
+        To protect your account and prevent unauthorised deletion of data, we may need to verify your identity before
+        processing your request. This may include confirming details you provided earlier, such as the phone number or
+        email address registered with us.
+      </p>
+      <ul>
+        <li>If we cannot verify your identity, we may not be able to process the request.</li>
+        <li>We will only ask for the minimum information needed to confirm that the request is genuinely from you.</li>
+      </ul>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">5</span> Retention Requirements</h2>
+      <p>
+        We will delete or anonymise the personal information you ask us to remove. However, we may need to retain certain
+        records where we are required or permitted to do so by applicable law.
+      </p>
+      <ul>
+        <li>Order and payment records may be retained for a limited period to meet legal, tax and accounting obligations.</li>
+        <li>Some records may also be retained where necessary to resolve disputes, prevent fraud or enforce our agreements.</li>
+        <li>Where retention is required, we will keep only the minimum information necessary for that purpose, and delete the rest.</li>
+      </ul>
+      <div class="pp-note">
+        Deletion is not automatic or immediate. Once identity is verified, we will action your request within a reasonable
+        period, subject to the retention requirements described above.
+      </div>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">6</span> Contact Us</h2>
+      <p>For any questions about this page or your data deletion request, please contact us:</p>
+      <div class="pp-contact-grid">
+        <div class="pp-contact-item">
+          <span class="pp-label">Email</span>
+          <a href="mailto:swadeshi36524@gmail.com">swadeshi36524@gmail.com</a>
+        </div>
+        <div class="pp-contact-item">
+          <span class="pp-label">Phone / WhatsApp</span>
+          <a href="https://wa.me/919030036524?text=Hi">+91 9030036524</a>
+        </div>
+        <div class="pp-contact-item">
+          <span class="pp-label">Address</span>
+          <span>GROUND FLOOR, H NO 2-22-247/A, JAYA NAGAR, Kukatpally, Hyderabad, Medchal Malkajgiri, Telangana, 500072</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pp-footer">
+    <p style="margin:0 0 6px;">© 2024 Swadeshi Natural Products. All rights reserved.</p>
+    <p style="margin:0;"><a href="/privacy-policy">Privacy Policy</a></p>
+  </footer>
+
+</body>
+</html>

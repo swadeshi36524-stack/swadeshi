@@ -1397,10 +1397,14 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
-    // Public storefront: the homepage, events page, privacy policy and static
-    // assets are viewable without logging in — the polished site is the entry point.
+    // Public storefront: the homepage, events page, privacy policy, data
+    // deletion page and static assets are viewable without logging in.
     if (pathname === '/privacy-policy' || pathname === '/privacy-policy.html') {
       return serveStatic(req, res, '/privacy-policy.html');
+    }
+
+    if (pathname === '/data-deletion' || pathname === '/data-deletion.html') {
+      return serveStatic(req, res, '/data-deletion.html');
     }
 
     if (pathname === '/' || pathname === '/index.html' ||

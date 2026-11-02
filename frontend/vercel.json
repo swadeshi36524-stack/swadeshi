@@ -24,6 +24,10 @@
             "dest": "/privacy-policy.html"
         },
         {
+            "src": "/data-deletion",
+            "dest": "/data-deletion.html"
+        },
+        {
             "src": "/",
             "dest": "/index.html"
         },
