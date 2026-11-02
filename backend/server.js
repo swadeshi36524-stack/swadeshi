@@ -1397,8 +1397,12 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
-    // Public storefront: the homepage, events page and static assets are
-    // viewable without logging in — the polished site is the entry point.
+    // Public storefront: the homepage, events page, privacy policy and static
+    // assets are viewable without logging in — the polished site is the entry point.
+    if (pathname === '/privacy-policy' || pathname === '/privacy-policy.html') {
+      return serveStatic(req, res, '/privacy-policy.html');
+    }
+
     if (pathname === '/' || pathname === '/index.html' ||
         pathname === '/events.html' || pathname.startsWith('/images/')) {
       return serveStatic(req, res, pathname);

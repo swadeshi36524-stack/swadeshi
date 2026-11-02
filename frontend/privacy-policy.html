@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | Swadeshi Natural Products</title>
+  <meta name="description" content="How Swadeshi Natural Products collects, uses, stores and protects your personal information.">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/design-system.css">
+  <style>
+    :root {
+      --pp-forest: #1A3626;
+      --pp-green: #2A5C41;
+      --pp-gold: #C2A573;
+      --pp-cream: #FDFBF7;
+      --pp-line: #EAE6E1;
+      --pp-body: #4A4642;
+      --pp-muted: #7A7571;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--pp-cream);
+      color: var(--pp-body);
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.7;
+    }
+
+    .pp-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(253, 251, 247, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--pp-line);
+    }
+
+    .pp-header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .pp-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--pp-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color .2s ease;
+    }
+    .pp-back:hover { color: var(--pp-green); }
+    .pp-back svg { width: 16px; height: 16px; }
+
+    .pp-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--pp-forest);
+      text-decoration: none;
+      letter-spacing: .2px;
+    }
+    .pp-brand span { color: var(--pp-gold); }
+
+    .pp-hero {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 56px 20px 8px;
+      text-align: center;
+    }
+
+    .pp-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 12px;
+      color: var(--pp-muted);
+      margin-bottom: 18px;
+    }
+    .pp-eyebrow::before, .pp-eyebrow::after {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: var(--pp-line);
+    }
+
+    .pp-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(30px, 5vw, 46px);
+      color: var(--pp-forest);
+      margin: 0 0 14px;
+      line-height: 1.2;
+    }
+
+    .pp-hero p {
+      max-width: 620px;
+      margin: 0 auto;
+      color: var(--pp-muted);
+      font-size: 15px;
+    }
+
+    .pp-updated {
+      display: inline-block;
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--pp-muted);
+      border: 1px solid var(--pp-line);
+      border-radius: 999px;
+      padding: 6px 16px;
+      background: #fff;
+    }
+
+    .pp-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .pp-intro {
+      background: #fff;
+      border: 1px solid var(--pp-line);
+      border-radius: 14px;
+      padding: 24px 26px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(26, 54, 38, 0.04);
+    }
+
+    .pp-card {
+      background: #fff;
+      border: 1px solid var(--pp-line);
+      border-radius: 14px;
+      padding: 28px 26px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(26, 54, 38, 0.04);
+    }
+
+    .pp-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--pp-forest);
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pp-num {
+      flex: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #E8F0EB;
+      color: var(--pp-green);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pp-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--pp-green);
+      margin: 20px 0 8px;
+    }
+
+    .pp-card p { margin: 0 0 12px; font-size: 15px; }
+    .pp-card p:last-child { margin-bottom: 0; }
+
+    .pp-card ul {
+      margin: 0 0 12px;
+      padding-left: 20px;
+    }
+    .pp-card li { margin: 7px 0; font-size: 15px; }
+    .pp-card li::marker { color: var(--pp-gold); }
+
+    .pp-card a { color: var(--pp-green); text-decoration: underline; text-underline-offset: 2px; }
+
+    .pp-note {
+      border-left: 3px solid var(--pp-gold);
+      background: #FBF8F2;
+      padding: 14px 18px;
+      border-radius: 0 10px 10px 0;
+      font-size: 14.5px;
+      color: var(--pp-body);
+      margin: 6px 0 14px;
+    }
+
+    .pp-contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .pp-contact-item {
+      border: 1px solid var(--pp-line);
+      border-radius: 12px;
+      padding: 16px 18px;
+      background: #fff;
+    }
+    .pp-contact-item .pp-label {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--pp-muted);
+      margin-bottom: 6px;
+    }
+    .pp-contact-item a, .pp-contact-item span {
+      font-size: 15px;
+      color: var(--pp-forest);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .pp-contact-item a:hover { color: var(--pp-green); }
+
+    .pp-footer {
+      border-top: 1px solid var(--pp-line);
+      text-align: center;
+      padding: 26px 20px 40px;
+      color: var(--pp-muted);
+      font-size: 13px;
+    }
+    .pp-footer a { color: var(--pp-green); text-decoration: none; }
+
+    @media (max-width: 640px) {
+      .pp-hero { padding-top: 36px; }
+      .pp-container { padding: 28px 16px 60px; }
+      .pp-intro, .pp-card { padding: 22px 18px; }
+      .pp-card h2 { font-size: 19px; }
+      .pp-header-inner { padding: 13px 16px; }
+      .pp-brand { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="pp-header">
+    <div class="pp-header-inner">
+      <a href="/" class="pp-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        Back to Home
+      </a>
+      <a href="/" class="pp-brand">Swadeshi Natural<span>Products</span></a>
+    </div>
+  </header>
+
+  <section class="pp-hero">
+    <div class="pp-eyebrow">Legal</div>
+    <h1>Privacy Policy</h1>
+    <p>This policy explains what personal information Swadeshi Natural Products collects, why we collect it, how we protect it, and the choices you have.</p>
+    <span class="pp-updated">Last updated: 2 November 2026</span>
+  </section>
+
+  <main class="pp-container">
+
+    <div class="pp-intro">
+      <p style="margin:0;font-size:15px;">
+        By using our website and services, or by contacting us on WhatsApp, you agree to the practices described in this policy.
+        We only collect information that is necessary to run our store, process and deliver your orders, provide customer
+        support and keep your account secure. We do not sell your personal information.
+      </p>
+    </div>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">1</span> Information We Collect</h2>
+      <p>We collect the following categories of personal information, depending on how you interact with us:</p>
+
+      <h3>Account information</h3>
+      <ul>
+        <li>Your name, email address and mobile number when you register or sign in.</li>
+        <li>Your password, which is stored only in a securely hashed form. We never store your password in readable text.</li>
+        <li>If you sign in with Google, we receive basic profile details from Google such as your name, email address, profile picture and Google account identifier.</li>
+      </ul>
+
+      <h3>Order and delivery information</h3>
+      <ul>
+        <li>Your full name, mobile number and email address.</li>
+        <li>Your delivery address, including locality and PIN code, and any delivery notes you provide.</li>
+        <li>Details of the products you order, quantities, amounts and order status.</li>
+      </ul>
+
+      <h3>Payment information</h3>
+      <ul>
+        <li>Payments are processed by our third-party payment gateway, Razorpay. We receive order and payment references, the amount and the payment status.</li>
+        <li>We do <strong>not</strong> collect or store your full card number, CVV or banking credentials on our systems.</li>
+      </ul>
+
+      <h3>Communication and support information</h3>
+      <ul>
+        <li>Messages and questions you send us, including on WhatsApp and through our website.</li>
+        <li>Your mobile number and your current position within our WhatsApp conversation flow, so the assistant can respond correctly.</li>
+      </ul>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">2</span> WhatsApp Communication and Customer Support</h2>
+      <p>
+        Our website offers a WhatsApp contact option and an automated assistant so you can browse our products and ask
+        questions. When you message our business number, we receive your WhatsApp phone number and the content of your
+        messages through the WhatsApp Business Platform.
+      </p>
+      <ul>
+        <li>We use your messages only to assist you, share product and order information, and provide support.</li>
+        <li>Your chosen language and conversation state are stored so the assistant can continue the conversation correctly across messages.</li>
+        <li>Messages you send are handled through Meta's WhatsApp Business Platform and are subject to WhatsApp's own terms and privacy practices in addition to this policy.</li>
+      </ul>
+      <div class="pp-note">
+        WhatsApp messaging is optional. You can always reach us by phone or through the website instead.
+      </div>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">3</span> How We Use Your Information</h2>
+      <ul>
+        <li>To create and manage your account and keep it secure.</li>
+        <li>To process, verify and fulfil your orders, arrange delivery and provide order updates.</li>
+        <li>To provide customer support and respond to your questions and requests.</li>
+        <li>To operate and improve our website, products and services.</li>
+        <li>To prevent fraud, misuse and unauthorised access, and to meet our legal and tax obligations.</li>
+      </ul>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">4</span> Data Storage, Security and Retention</h2>
+      <p>
+        Your information is stored in our database and on the servers and cloud services we use to run the website and
+        application. We apply reasonable technical and organisational safeguards, including hashed passwords, encrypted
+        connections (HTTPS) and restricted access controls, to protect your information.
+      </p>
+      <ul>
+        <li>Access to personal data is limited to those who need it to operate the business.</li>
+        <li>We retain your information only for as long as is necessary to provide our services and to comply with legal, tax and accounting requirements. When it is no longer needed, we delete or anonymise it.</li>
+        <li>No method of transmission or storage is completely secure, so we cannot guarantee absolute security.</li>
+      </ul>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">5</span> Sharing of Information</h2>
+      <p>We do not sell your personal information. We share it only as needed to run our business, and only with the following types of service providers:</p>
+      <ul>
+        <li><strong>Payment gateway</strong> — to securely process your payments.</li>
+        <li><strong>Delivery and courier partners</strong> — to deliver your orders to your address.</li>
+        <li><strong>Technology and hosting providers</strong> — including our website hosting, backend hosting and managed database services, who store and process data on our behalf.</li>
+        <li><strong>Messaging platform</strong> — Meta's WhatsApp Business Platform, when you choose to contact us on WhatsApp.</li>
+        <li><strong>Sign-in provider</strong> — Google, when you choose to sign in with your Google account.</li>
+        <li><strong>Legal and regulatory bodies</strong> — where we are required to do so by law.</li>
+      </ul>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">6</span> Cookies and Website Usage</h2>
+      <p>Our website uses a small number of cookies and similar technologies that are necessary for it to function:</p>
+      <ul>
+        <li><strong>Session and sign-in cookies</strong> — to keep you logged in and to remember your session.</li>
+        <li><strong>Preferences</strong> — such as remembering items in your cart or your selected language, where applicable.</li>
+      </ul>
+      <p>
+        These cookies are used to operate the website securely and are not used to sell your data. You can control or
+        delete cookies through your browser settings. Disabling essential cookies may affect how the website works.
+      </p>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">7</span> Your Rights and Data Deletion</h2>
+      <p>You may contact us at any time to request the following in relation to your personal information:</p>
+      <ul>
+        <li>Access to the personal information we hold about you.</li>
+        <li>Correction of any information that is inaccurate or incomplete.</li>
+        <li>Deletion of your personal information, subject to the limitations below.</li>
+        <li>Withdrawal of consent, where our processing is based on consent.</li>
+      </ul>
+
+      <h3>How to request deletion of your personal data</h3>
+      <p>To delete your account and personal information, follow these steps:</p>
+      <ul>
+        <li>Contact us by phone or WhatsApp at <a href="https://wa.me/919030036524?text=Hi">+91 9030036524</a>, or write to us using the contact details below.</li>
+        <li>Tell us that you want your personal data to be deleted. If you have an account, please include the mobile number or email address registered with us so we can locate your records.</li>
+        <li>We may ask you to verify your identity before acting on the request, to protect your account and data.</li>
+        <li>Once verified, we will delete or anonymise your personal information that we are not legally required to keep.</li>
+      </ul>
+      <div class="pp-note">
+        Some records, such as order and payment information, may need to be retained for a limited period to meet legal,
+        tax and accounting obligations, or to resolve disputes. In such cases, we will keep only what is required and
+        delete the rest.
+      </div>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">8</span> Changes to This Policy</h2>
+      <p>
+        We may update this policy from time to time to reflect changes in our practices or for legal reasons. When we do,
+        we will update the "Last updated" date at the top of this page. We encourage you to review it periodically.
+      </p>
+    </section>
+
+    <section class="pp-card">
+      <h2><span class="pp-num">9</span> Contact Us</h2>
+      <p>For any questions about this policy, or to exercise your rights over your personal information, please contact us:</p>
+      <div class="pp-contact-grid">
+        <div class="pp-contact-item">
+          <span class="pp-label">Phone / WhatsApp</span>
+          <a href="https://wa.me/919030036524?text=Hi">+91 9030036524</a>
+        </div>
+        <div class="pp-contact-item">
+          <span class="pp-label">Address</span>
+          <span>GROUND FLOOR, H NO 2-22-247/A, JAYA NAGAR, Kukatpally, Hyderabad, Medchal Malkajgiri, Telangana, 500072</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pp-footer">
+    <p style="margin:0 0 6px;">© 2024 Swadeshi Natural Products. All rights reserved.</p>
+    <p style="margin:0;"><a href="/privacy-policy">Privacy Policy</a></p>
+  </footer>
+
+</body>
+</html>
