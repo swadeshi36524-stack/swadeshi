@@ -1426,7 +1426,22 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+async function ensureWhatsAppSessionsTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS whatsapp_sessions (
+      phone_number      TEXT PRIMARY KEY,
+      language          TEXT,
+      state             TEXT,
+      last_category     TEXT,
+      last_product_id   TEXT,
+      pagination_offset INTEGER DEFAULT 0,
+      updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+  `);
+}
+
 server.listen(port, () => {
   console.log(`Swadeshi server running at http://localhost:${port}`);
-  ensurePaymentIntentsTable().catch(err => console.error('Migration failed at startup:', err));
+  ensurePaymentIntentsTable().catch(err => console.error('Payment migration failed:', err));
+  ensureWhatsAppSessionsTable().catch(err => console.error('WhatsApp migration failed:', err));
 });
