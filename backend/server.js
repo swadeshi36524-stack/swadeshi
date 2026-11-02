@@ -8,6 +8,7 @@ const { URL } = require('url');
 const crypto = require('crypto');
 const pool = require('./db');
 const razorpay = require("./razorpay");
+const { handleWhatsAppWebhook } = require('./whatsapp-bot');
 
 // Customer authentication utilities
 const { hashPassword, verifyPassword, createCustomerToken, verifyCustomerToken, getGoogleTokens, getGoogleUser } = require('./auth');
@@ -1347,6 +1348,53 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/customer/logout' && req.method === 'POST') {
       clearCustomerCookie(res);
       return sendJson(res, 200, { ok: true });
+    }
+
+    // -----------------------------------------------------------------------
+    // WHATSAPP WEBHOOK
+    // -----------------------------------------------------------------------
+    const normalizedPath = pathname.replace(/\/$/, '');
+    if (normalizedPath === '/api/whatsapp') {
+      console.log(`[WhatsApp] Incoming ${req.method} request. Path: ${pathname}`);
+      if (req.method === 'GET') {
+        // Webhook Verification for Meta
+        const mode = requestUrl.searchParams.get('hub.mode');
+        const token = requestUrl.searchParams.get('hub.verify_token');
+        const challenge = requestUrl.searchParams.get('hub.challenge');
+
+        console.log(`[WhatsApp] Verification attempt. Mode: ${mode}, Token: ${token}`);
+
+        if (mode === 'subscribe' && token === process.env.WHATSAPP_VERIFY_TOKEN) {
+          console.log('[WhatsApp] Webhook verified successfully');
+          return sendText(res, 200, challenge);
+        } else {
+          console.error(`[WhatsApp] Verification failed. Expected: ${process.env.WHATSAPP_VERIFY_TOKEN}, Received: ${token}`);
+          return sendJson(res, 403, { error: 'Forbidden' });
+        }
+      }
+
+      if (req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', async () => {
+          try {
+            const payload = JSON.parse(body);
+            // Process the webhook asynchronously
+            handleWhatsAppWebhook(payload).catch(err => {
+              console.error('[WhatsApp] Processing error:', err);
+            });
+            // Return 200 immediately to acknowledge receipt (idempotency handled in bot)
+            res.writeHead(200);
+            res.end();
+          } catch (err) {
+            console.error('[WhatsApp] Webhook parse error:', err);
+            if (!res.writableEnded) {
+              sendJson(res, 400, { error: 'Invalid payload' });
+            }
+          }
+        });
+        return;
+      }
     }
 
     // Public storefront: the homepage, events page and static assets are
