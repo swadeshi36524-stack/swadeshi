@@ -11,7 +11,7 @@
 
   var hostname = typeof location !== 'undefined' ? location.hostname.toLowerCase() : '';
   var isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'owner.localhost';
-  var isOwnerHost = hostname === 'owner.swadeshinatural.com' || hostname === 'owner.localhost';
+  var isOwnerHost = hostname === 'owner.swadeshinatural.com' || hostname === 'owner.localhost' || isLocal;
   
   // Rules for determining portal mode
   var MODE = 'customer'; // Default to customer portal

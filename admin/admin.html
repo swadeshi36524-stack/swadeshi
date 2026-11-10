@@ -1410,6 +1410,13 @@
           </svg>
           Delivery zones
         </button>
+        <button class="nav-item" data-page="payments">
+          <svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M4 4h12v12H4V4z" />
+            <path d="M4 8h12M8 4v12" />
+          </svg>
+          Payments
+        </button>
         <button class="nav-item" data-page="reports">
           <svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
             <path d="M3 5.5h14M3 10h14M3 14.5h9" />
@@ -1465,6 +1472,19 @@
               <path d="M3.5 16.5h13" />
             </svg>
             Export
+          </button>
+          <button class="btn" id="import-btn">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+              <path d="M10 15V4M5.5 9.5L10 5l4.5 4.5" />
+              <path d="M3.5 16.5h13" />
+            </svg>
+            Import
+          </button>
+          <button class="btn btn-primary" id="add-catalogue-btn" style="background:#5a7a2e; border-color:#4a6522;">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 4v12M4 10h12" />
+            </svg>
+            Add catalogue
           </button>
           <button class="btn btn-primary" id="add-product-btn">
             <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
@@ -1626,7 +1646,10 @@
         <section class="page" id="page-products">
           <div class="panel">
             <div class="panel-head">
-              <h2 id="products-heading">All products</h2>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <h2 id="products-heading">All products</h2>
+                <button class="btn" id="delete-catalogue-btn" style="padding:4px 8px; font-size:11px; display:none; background:#a4392b; color:#fff; border-color:#8a2e23;">Delete Catalogue</button>
+              </div>
               <div class="panel-filters" id="products-filters">
                 <button class="chip active" data-stock="all">All stock</button>
                 <button class="chip" data-stock="ok">In stock</button>
@@ -1660,6 +1683,29 @@
             <div class="panel-foot-note">
               <span id="products-count-note">Showing 18 products</span>
               <span>Click a column heading to sort</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-payments">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Storefront Payments</h2>
+              <span class="muted" id="payments-count-note" style="font-size:12px;">0 payments tracked</span>
+            </div>
+            <div class="panel-body">
+              <table id="payments-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th class="right">Amount</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
             </div>
           </div>
         </section>
@@ -2105,7 +2151,40 @@
           return '<div class="preview-item"><img src="' + escapeHtml(url) + '" alt="Product image preview"></div>';
         }).join('');
       }
+      function updateSidebarCounts() {
+        // Update Orders count
+        var ordersCountEl = document.querySelector('.nav-item[data-page="orders"] .nav-count');
+        if (ordersCountEl) ordersCountEl.textContent = orders.length;
+
+        // Update All products count
+        var allProductsCountEl = document.querySelector('.nav-item[data-page="products"][data-cat="all"] .nav-count');
+        if (allProductsCountEl) allProductsCountEl.textContent = products.length;
+
+        // Update Category counts
+        Object.keys(categoryNameMap).forEach(function (cat) {
+          var count = products.filter(function (p) { return p.cat === cat; }).length;
+          var el = document.querySelector('.nav-item[data-page="products"][data-cat="' + cat + '"] .nav-count');
+          if (el) el.textContent = count;
+        });
+
+        // Update pageMeta subtitles to reflect real counts
+        pageMeta.orders.sub = orders.length + ' orders on record';
+        pageMeta.customers.sub = customers.length + ' customers on record';
+        pageMeta.products.sub = products.length + ' products across ' + Object.keys(categoryNameMap).length + ' categories';
+
+        // Update current page subtitle if it's one of these
+        var activeNav = document.querySelector('.nav-item.active');
+        if (activeNav) {
+          var page = activeNav.getAttribute('data-page');
+          var meta = pageMeta[page];
+          if (meta && page !== 'dashboard') {
+            document.getElementById('page-subtitle').textContent = meta.sub;
+          }
+        }
+      }
+
       function refreshProductViews() {
+        updateSidebarCounts();
         renderDashboard();
         renderProducts();
       }
@@ -2203,13 +2282,20 @@
 
         if (page === 'products') {
           currentCategory = opts.cat || 'all';
-          document.getElementById('products-heading').textContent = categoryLabels[currentCategory];
-          pageTitleEl.textContent = categoryLabels[currentCategory].split(' — ')[0];
-          pageSubtitleEl.textContent = pageMeta.products.sub;
+          document.getElementById('products-heading').textContent = categoryLabels[currentCategory] || currentCategory;
+          pageTitleEl.textContent = (categoryLabels[currentCategory] || currentCategory).split(' — ')[0];
+          pageSubtitleEl.textContent = products.filter(p => currentCategory === 'all' || p.cat === currentCategory).length + ' products in this view';
+          
+          document.getElementById('delete-catalogue-btn').style.display = (currentCategory !== 'all') ? 'inline-flex' : 'none';
+          
           if (opts.filter) {
             pendingProductFilter = opts.filter;
           }
           renderProducts();
+        } else if (page === 'payments') {
+          renderPayments();
+          pageTitleEl.textContent = 'Payments';
+          pageSubtitleEl.textContent = 'Customer storefront transactions';
         } else {
           var meta = pageMeta[page] || { title: page, sub: '' };
           pageTitleEl.textContent = meta.title;
@@ -2488,6 +2574,25 @@
         });
       });
 
+      async function renderPayments() {
+        try {
+          var data = await fetchJson('/api/payments');
+          var tbody = document.querySelector('#payments-table tbody');
+          tbody.innerHTML = data.map(function (p) {
+            return '<tr>' +
+              '<td class="muted num">' + (p.razorpay_order_id || 'N/A') + '</td>' +
+              '<td class="right num">' + fmtMoney(p.amount_paise / 100) + '</td>' +
+              '<td class="muted">' + (p.customer_id || 'Guest') + '</td>' +
+              '<td class="muted">' + new Date(p.created_at).toLocaleDateString() + '</td>' +
+              '<td><span class="status-pill ' + (p.used ? 'pill-paid' : 'pill-pending') + '">' + (p.used ? 'Processed' : 'Pending') + '</span></td>' +
+              '</tr>';
+          }).join('');
+          document.getElementById('payments-count-note').textContent = data.length + ' payments tracked';
+        } catch (err) {
+          console.error('Failed to load payments:', err);
+        }
+      }
+
       /* ===================== CUSTOMERS PAGE ===================== */
 
       function renderCustomers() {
@@ -2655,6 +2760,96 @@
         URL.revokeObjectURL(url);
       });
 
+      document.getElementById('import-btn').addEventListener('click', function () {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.csv';
+        input.onchange = function (e) {
+          var file = e.target.files[0];
+          if (!file) return;
+          var reader = new FileReader();
+          reader.onload = async function (event) {
+            var text = event.target.result;
+            var rows = text.split('\n').filter(Boolean).map(r => r.split(','));
+            if (rows.length < 2) return;
+            var headers = rows[0].map(h => h.trim().toLowerCase());
+            var imported = rows.slice(1).map(row => {
+              var p = {};
+              headers.forEach((h, i) => { p[h] = row[i] ? row[i].trim() : ''; });
+              return normalizeProduct({
+                id: p.id || p.sku || 'SWD-' + Math.random().toString(36).substr(2, 9),
+                name: p.name || p.title || 'Imported Product',
+                cat: p.cat || p.category || 'cosmetic',
+                price: parseFloat(p.price) || 0,
+                stock: parseInt(p.stock) || 0,
+                active: true
+              });
+            });
+            if (confirm('Import ' + imported.length + ' products?')) {
+              try {
+                await fetchJson('/api/products/bulk', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ products: imported })
+                });
+                await loadBootstrapData();
+                refreshProductViews();
+                alert('Import successful!');
+              } catch (err) {
+                alert('Import failed: ' + err.message);
+              }
+            }
+          };
+          reader.readAsText(file);
+        };
+        input.click();
+      });
+
+      document.getElementById('add-catalogue-btn').addEventListener('click', function () {
+        var name = prompt('Enter new catalogue name:');
+        if (!name) return;
+        var slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        categoryNameMap[slug] = name;
+        categoryLabels[slug] = name;
+        
+        var navGroup = document.querySelectorAll('.nav-group')[1];
+        var btn = document.createElement('button');
+        btn.className = 'nav-item';
+        btn.setAttribute('data-page', 'products');
+        btn.setAttribute('data-cat', slug);
+        btn.innerHTML = '<svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7.2"/><path d="M10 6v4l2.6 2.6"/></svg>' + name + '<span class="nav-count">0</span>';
+        btn.onclick = function() { goToPage('products', { cat: slug }); };
+        navGroup.appendChild(btn);
+        
+        alert('Catalogue "' + name + '" added. Add products to see it on storefront.');
+      });
+
+      document.getElementById('delete-catalogue-btn').addEventListener('click', async function () {
+        if (!currentCategory || currentCategory === 'all') return;
+        var label = categoryLabels[currentCategory] || currentCategory;
+        if (!confirm('Delete the entire catalogue "' + label + '" and all its products?')) return;
+        
+        try {
+          await fetchJson('/api/categories/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category: currentCategory })
+          });
+          
+          delete categoryNameMap[currentCategory];
+          delete categoryLabels[currentCategory];
+          
+          var navItem = document.querySelector('.nav-item[data-cat="' + currentCategory + '"]');
+          if (navItem) navItem.remove();
+          
+          await loadBootstrapData();
+          goToPage('products', { cat: 'all' });
+          alert('Catalogue deleted.');
+        } catch (err) {
+          alert('Failed to delete: ' + err.message);
+        }
+      });
+
       document.getElementById('add-product-btn').addEventListener('click', function () {
         goToPage('products', { cat: 'all' });
         openProductModal();
@@ -2694,6 +2889,7 @@
       (async function bootstrapApp() {
         await loadBootstrapData();
         rememberProductsLocally();
+        updateSidebarCounts();
         renderDashboard();
         renderOrders();
         renderProducts();

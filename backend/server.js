@@ -720,6 +720,12 @@ async function serveStatic(req, res, pathname) {
     } else if (safePath.startsWith('/admin/')) {
       candidates.push({ base: adminDir, rel: safePath.slice(7) });
     }
+
+    // If it's an owner portal request, prioritize the admin directory for any file.
+    if (isOwnerPortal(req)) {
+      candidates.push({ base: adminDir, rel: safePath });
+    }
+
     candidates.push({ base: frontendDir, rel: safePath });
     candidates.push({ base: projectDir, rel: safePath });
 
@@ -958,6 +964,24 @@ const server = http.createServer(async (req, res) => {
         fetchAllCustomers()
       ]);
       return sendJson(res, 200, { products, orders, customers });
+    }
+
+    // ---- payments ----
+    if (pathname === '/api/payments' && req.method === 'GET') {
+      if (!requireAdmin(req, res)) return;
+      await ensurePaymentIntentsTable();
+      const { rows } = await pool.query('SELECT * FROM payment_intents ORDER BY created_at DESC');
+      return sendJson(res, 200, rows);
+    }
+
+    // ---- categories ----
+    if (pathname === '/api/categories/delete' && req.method === 'POST') {
+      if (!requireAdmin(req, res)) return;
+      const body = await readBody(req);
+      const { category } = body;
+      if (!category) return sendJson(res, 400, { error: 'category is required' });
+      await pool.query('DELETE FROM products WHERE cat = $1 OR cat_label = $1', [category]);
+      return sendJson(res, 200, { ok: true });
     }
 
     // ---- products ----
